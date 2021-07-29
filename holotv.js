@@ -84,6 +84,8 @@ function onYouTubeIframeAPIReady() {
     height: '480',
     playerVars : {
       enablejsapi: 1,
+      autoplay: 1,
+      origin: 'https://rintaroutw.github.io'
     },
     events: {
       'onReady': onPlayerReady

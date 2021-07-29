@@ -1,7 +1,7 @@
 /* grid layout */
 .container {
   display: grid;
-  grid-template-columns: 20px auto 300px 20px;
+  grid-template-columns: 20px auto 340px 20px;
 }
 
 .item.display {
@@ -12,10 +12,18 @@
 .item.channels {
   grid-column-start: 3;
   grid-column-end: 4;
+  display: grid;
+  grid-template-rows: 10px auto 10px;
+  overflow : scroll;
+}
+
+#Channels {
+  margin: 20px;
 }
 
 body {
   background-color: #000;
+  color: #fff;
 }
 
 @keyframes fade-in {

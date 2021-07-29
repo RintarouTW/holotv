@@ -8,9 +8,19 @@ var player
 // channels : array of videoId(s)
 var channels = []
 
-function play(evt) {
-  let videoId = evt.target.getAttribute('id')
+function getChannelInfo(videoId) {
+  fetch(`${_serverURL}/yt/${videoId}`)
+    .then(resp => resp.json())
+    .then(info => {
+      document.getElementById('Title').innerText = info?.snippet?.title
+    })
+}
+
+function play(videoId) {
+  // let videoId = evt.target.getAttribute('id')
+  console.log('play - ' + videoId)
   player.loadVideoById(videoId)
+  getChannelInfo(videoId)
 }
 
 function channelItem(videoId) {
@@ -18,7 +28,7 @@ function channelItem(videoId) {
   item.setAttribute('id', videoId)
   item.setAttribute('class', 'cover')
   item.setAttribute("style", `background: url('https://img.youtube.com/vi/${videoId}/0.jpg') no-repeat center center / cover;`)
-  item.onclick = play
+  item.onclick = play.bind(this, videoId)
   return item
 }
 
@@ -44,8 +54,8 @@ function updateChannels(autoStart) {
   fetch(_serverURL + '/hololive')
     .then(resp => resp.json())
     .then(newchannels => {
-      console.log('newchannels=' + newchannels)
-      console.log('channels=' + channels)
+      console.log('newchannels = ' + newchannels)
+      console.log('channels = ' + channels)
       // remove the outdated channels
       channels.forEach(videoId => {
         if (!newchannels.includes(videoId)) removeChannel(videoId)
@@ -62,7 +72,7 @@ function updateChannels(autoStart) {
 }
 
 function onPlayerReady() {
-  if (startVideoId) player.loadVideoById(startVideoId)
+  if (startVideoId) play(startVideoId)
 }
 
 function onYouTubeIframeAPIReady() {

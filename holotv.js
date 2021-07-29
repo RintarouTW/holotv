@@ -43,6 +43,7 @@ function removeChannel(videoId) {
   console.log(`remove channel - ${videoId}`)
   let channel = document.getElementById(videoId)
   channel?.addEventListener('animationend', evt => {
+    evt.preventDefault()
     evt.target.remove()
     // channels = [] // for test
   })

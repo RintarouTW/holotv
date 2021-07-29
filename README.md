@@ -8,3 +8,8 @@ This is a fan creation to list all live streams of Hololive TV.
 - Auto update the list of live streams
 
 https://rintaroutw.github.io/holotv/
+
+## Favicon Generation
+
+- images/favicon.svg
+- https://realfavicongenerator.net/

@@ -12,6 +12,7 @@ function getChannelInfo(videoId) {
   fetch(`${_serverURL}/yt/${videoId}`)
     .then(resp => resp.json())
     .then(info => {
+      // console.log(info.snippet)
       document.getElementById('Title').innerText = info?.snippet?.title
     })
 }

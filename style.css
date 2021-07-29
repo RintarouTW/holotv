@@ -1,0 +1,52 @@
+/* grid layout */
+.container {
+  display: grid;
+  grid-template-columns: 20px auto 300px 20px;
+}
+
+.item.display {
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+.item.channels {
+  grid-column-start: 3;
+  grid-column-end: 4;
+}
+
+body {
+  background-color: #000;
+}
+
+@keyframes fade-in {
+  from { opacity : 0; transform: scale(0.3); }
+  to { opcitry : 1; transform: scale(1.0);}
+}
+
+@keyframes fade-out {
+  from { opacity : 1; transform: scale(1.0); }
+  to { opcitry : 0; transform: scale(0.3);}
+}
+
+.cover {
+  width:300px;
+  height: 90px; 
+  border-radius: 20px;
+  margin-bottom: 10px;
+  transition: all .1s ease-in;
+  animation: fade-in 1s;
+}
+
+.coverFadeOut {
+  width:300px;
+  height: 90px; 
+  border-radius: 20px;
+  margin-bottom: 10px;
+  transition: all .1s ease-out;
+  animation: fade-out 1s;
+}
+
+.cover:hover {
+  transform: scale(1.1);
+}
+

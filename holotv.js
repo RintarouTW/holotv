@@ -1,5 +1,7 @@
 // Globals
 const _serverURL = "https://fathomless-brushlands-18222.herokuapp.com"
+const reloadTimeout = 600000
+
 var startVideoId = ''
 // player : YTPlayer singleton
 var player
@@ -38,11 +40,12 @@ function removeChannel(videoId) {
 }
 
 function updateChannels(autoStart) {
-  console.log('updateChannels')
+  console.log('updateChannels()')
   fetch(_serverURL + '/hololive')
     .then(resp => resp.json())
     .then(newchannels => {
-      console.log(newchannels, channels)
+      console.log('newchannels=' + newchannels)
+      console.log('channels=' + channels)
       // remove the outdated channels
       channels.forEach(videoId => {
         if (!newchannels.includes(videoId)) removeChannel(videoId)
@@ -55,17 +58,17 @@ function updateChannels(autoStart) {
       if (autoStart) startVideoId = newchannels[0]
       channels = newchannels
     })
-  setTimeout(updateChannels, 600000)
+  setTimeout(updateChannels, reloadTimeout)
 }
 
 function onPlayerReady() {
-  player.loadVideoById(startVideoId)
+  if (startVideoId) player.loadVideoById(startVideoId)
 }
 
 function onYouTubeIframeAPIReady() {
   updateChannels(true)
   // export to the global.
-  console.log('api ready')
+  console.log('yt api ready')
   player = new YT.Player('YTPlayer', {
     width: '640',
     height: '480',

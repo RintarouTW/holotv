@@ -1,5 +1,6 @@
 // Globals
 const _serverURL = "https://fathomless-brushlands-18222.herokuapp.com"
+var reloadTimer
 const reloadTimeout = 600000
 
 var startVideoId = ''
@@ -75,7 +76,8 @@ function updateChannels(autoStart) {
       if (autoStart) startVideoId = newchannels[0]
       channels = newchannels
     })
-  setTimeout(updateChannels, reloadTimeout)
+  if (reloadTimer) clearTimeout(reloadTimer)
+  reloadTimer = setTimeout(updateChannels, reloadTimeout)
 }
 
 function onPlayerReady() {

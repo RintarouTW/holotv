@@ -21,6 +21,9 @@
 #Channels {
   margin: 20px;
 }
+#Title {
+  width: 700px;
+}
 
 body {
   background-color: #000;

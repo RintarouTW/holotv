@@ -1,13 +1,12 @@
 // Globals
 const _serverURL = "https://fathomless-brushlands-18222.herokuapp.com"
-var reloadTimer
 const reloadTimeout = 600000
 
+var reloadTimer
 var startVideoId = ''
-// player : YTPlayer singleton
-var player
-// channels : array of videoId(s)
-var channels = []
+var player            // player : YTPlayer singleton
+var channels = []     // channels : array of videoId(s)
+var _keydownHandler
 
 function getChannelInfo(videoId) {
   fetch(`${_serverURL}/yt/${videoId}`)
@@ -22,6 +21,8 @@ function play(videoId) {
   console.log('play - ' + videoId)
   player.loadVideoById(videoId)
   getChannelInfo(videoId)
+  // save videoId to the cookie
+  document.cookie = `${videoId}`
 }
 
 function playByClick(evt) {
@@ -73,8 +74,12 @@ function updateChannels(autoStart) {
       newchannels.forEach(videoId => {
         if (!channels.includes(videoId)) addChannel(videoId)
       })
-      if (autoStart) startVideoId = newchannels[0]
       channels = newchannels
+      if (autoStart) {
+        startVideoId = newchannels[0]
+        let lastVideoId = document.cookie // get last video id from cookie
+        startVideoId = channels.includes(lastVideoId) ? lastVideoId : ''
+      }
     })
   if (reloadTimer) clearTimeout(reloadTimer)
   reloadTimer = setTimeout(updateChannels, reloadTimeout)
@@ -86,8 +91,7 @@ function onPlayerReady() {
 
 function onYouTubeIframeAPIReady() {
   updateChannels(true)
-  // export to the global.
-  console.log('yt api ready')
+  // console.log('yt api ready')
   player = new YT.Player('YTPlayer', {
     width: '640',
     height: '480',
@@ -104,3 +108,14 @@ function onYouTubeIframeAPIReady() {
   })
 }
 
+/* key binding */
+if (_keydownHandler) document.removeEventListener('keydown', _keydownHandler)
+_keydownHandler = evt => {
+  // console.log(evt.code)
+  switch(evt.code) {
+    case 'KeyR':
+      updateChannels()
+      break
+  }
+}
+document.addEventListener('keydown', _keydownHandler)

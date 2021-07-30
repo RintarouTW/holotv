@@ -53,8 +53,9 @@ function removeChannel(videoId) {
   let channel = document.getElementById(videoId)
   channel?.addEventListener('animationend', evt => {
     evt.preventDefault()
+    evt.stopPropagation()
     evt.target.remove()
-  })
+  }, {once: true})
   channel?.setAttribute('class', 'coverFadeOut')
 }
 
@@ -114,6 +115,7 @@ const animateCSS = (element, animation) =>
     node.classList.add(animation)
 
     function handleAnimationEnd(evt) {
+      evt.preventDefault()
       evt.stopPropagation()
       node.classList.remove(animation)
       resolve()
@@ -132,4 +134,4 @@ const _keydownHandler = evt => {
       break
   }
 }
-document.addEventListener('keydown', _keydownHandler, {once: true})
+document.addEventListener('keydown', _keydownHandler)

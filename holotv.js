@@ -18,10 +18,15 @@ function getChannelInfo(videoId) {
 }
 
 function play(videoId) {
-  // let videoId = evt.target.getAttribute('id')
   console.log('play - ' + videoId)
   player.loadVideoById(videoId)
   getChannelInfo(videoId)
+}
+
+function playByClick(evt) {
+  evt.preventDefault()
+  let videoId = evt.target.getAttribute('id')
+  if (videoId) play(videoId)
 }
 
 function channelItem(videoId) {
@@ -29,7 +34,7 @@ function channelItem(videoId) {
   item.setAttribute('id', videoId)
   item.setAttribute('class', 'cover')
   item.setAttribute("style", `background: url('https://img.youtube.com/vi/${videoId}/0.jpg') no-repeat center center / cover;`)
-  item.onclick = play.bind(this, videoId)
+  item.onclick = playByClick
   return item
 }
 

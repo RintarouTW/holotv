@@ -9,12 +9,14 @@ var startVideoId
 var player            // player : YTPlayer singleton
 var channels = []     // channels : array of videoId(s)
 
+window.$ = selector => document.querySelector(selector)
+
 function getChannelInfo(videoId) {
   fetch(`${_serverURL}/yt/${videoId}`)
     .then(resp => resp.json())
     .then(info => {
       // console.log(info.snippet)
-      document.getElementById('Title').innerText = info?.snippet?.title
+      $('#Title').innerText = info?.snippet?.title
     })
 }
 
@@ -43,14 +45,14 @@ function channelItem(videoId) {
 
 function addChannel(videoId) {
   console.log(`add channel - ${videoId}`)
-  let list = document.getElementById('Channels')
+  let list = $('#Channels')
   let item = channelItem(videoId)
   list.appendChild(item)
 }
 
 function removeChannel(videoId) {
   console.log(`remove channel - ${videoId}`)
-  let channel = document.getElementById(videoId)
+  let channel = $(`#${videoId}`)
   channel?.addEventListener('animationend', evt => {
     evt.preventDefault()
     evt.stopPropagation()
@@ -111,7 +113,7 @@ function onYouTubeIframeAPIReady() {
 // simple css animation helper
 const animateCSS = (element, animation) => 
   new Promise((resolve, reject) => {
-    const node = document.querySelector(element)
+    const node = $(element)
     node.classList.add(animation)
 
     function handleAnimationEnd(evt) {

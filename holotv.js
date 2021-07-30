@@ -1,12 +1,13 @@
 // Globals
-const _serverURL = "https://fathomless-brushlands-18222.herokuapp.com"
+const _serverURL = 'https://fathomless-brushlands-18222.herokuapp.com'
+const _webOrigin = 'https://rintaroutw.github.io'
+const _displayWidth = 720, _displayHeight = 405
 const reloadTimeout = 600000
 
 var reloadTimer
 var startVideoId
 var player            // player : YTPlayer singleton
 var channels = []     // channels : array of videoId(s)
-var _keydownHandler
 
 function getChannelInfo(videoId) {
   fetch(`${_serverURL}/yt/${videoId}`)
@@ -53,7 +54,6 @@ function removeChannel(videoId) {
   channel?.addEventListener('animationend', evt => {
     evt.preventDefault()
     evt.target.remove()
-    // channels = [] // for test
   })
   channel?.setAttribute('class', 'coverFadeOut')
 }
@@ -89,24 +89,25 @@ function onPlayerReady() {
 }
 
 function onYouTubeIframeAPIReady() {
-  updateChannels(true)
   // console.log('yt api ready')
+  updateChannels(true)
   player = new YT.Player('YTPlayer', {
-    width: '720',
-    height: '405',
+    width: _displayWidth,
+    height: _displayHeight,
     playerVars : {
       enablejsapi: 1,
       // controls: 0,
       // modestbranding: 1,
       autoplay: 1,
-      origin: 'https://rintaroutw.github.io',
+      origin: _webOrigin,
     },
     events: {
       'onReady': onPlayerReady
     }
   })
 }
-/* simple css animation helper */
+
+// simple css animation helper
 const animateCSS = (element, animation) => 
   new Promise((resolve, reject) => {
     const node = document.querySelector(element)
@@ -121,9 +122,8 @@ const animateCSS = (element, animation) =>
     node.addEventListener('animationend', handleAnimationEnd, {once: true})
   })
 
-/* key binding */
-if (_keydownHandler) document.removeEventListener('keydown', _keydownHandler)
-_keydownHandler = evt => {
+// key binding
+const _keydownHandler = evt => {
   // console.log(evt.code)
   switch(evt.code) {
     case 'KeyR':
@@ -132,4 +132,4 @@ _keydownHandler = evt => {
       break
   }
 }
-document.addEventListener('keydown', _keydownHandler)
+document.addEventListener('keydown', _keydownHandler, {once: true})

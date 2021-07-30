@@ -106,6 +106,20 @@ function onYouTubeIframeAPIReady() {
     }
   })
 }
+/* simple css animation helper */
+const animateCSS = (element, animation) => 
+  new Promise((resolve, reject) => {
+    const node = document.querySelector(element)
+    node.classList.add(animation)
+
+    function handleAnimationEnd(evt) {
+      evt.stopPropagation()
+      node.classList.remove(animation)
+      resolve()
+    }
+    
+    node.addEventListener('animationend', handleAnimationEnd, {once: true})
+  })
 
 /* key binding */
 if (_keydownHandler) document.removeEventListener('keydown', _keydownHandler)
@@ -113,6 +127,7 @@ _keydownHandler = evt => {
   // console.log(evt.code)
   switch(evt.code) {
     case 'KeyR':
+      animateCSS('#Channels', 'flash')
       updateChannels()
       break
   }

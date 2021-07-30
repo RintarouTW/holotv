@@ -3,7 +3,7 @@ const _serverURL = "https://fathomless-brushlands-18222.herokuapp.com"
 const reloadTimeout = 600000
 
 var reloadTimer
-var startVideoId = ''
+var startVideoId
 var player            // player : YTPlayer singleton
 var channels = []     // channels : array of videoId(s)
 var _keydownHandler
@@ -92,8 +92,8 @@ function onYouTubeIframeAPIReady() {
   updateChannels(true)
   // console.log('yt api ready')
   player = new YT.Player('YTPlayer', {
-    width: '640',
-    height: '480',
+    width: '720',
+    height: '405',
     playerVars : {
       enablejsapi: 1,
       // controls: 0,

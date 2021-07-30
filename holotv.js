@@ -21,8 +21,8 @@ function play(videoId) {
   console.log('play - ' + videoId)
   player.loadVideoById(videoId)
   getChannelInfo(videoId)
-  // save videoId to the cookie
-  document.cookie = `${videoId}`
+  // save videoId to the local storage
+  window.localStorage.setItem('lastVideoId',videoId)
 }
 
 function playByClick(evt) {
@@ -76,8 +76,7 @@ function updateChannels(autoStart) {
       })
       channels = newchannels
       if (autoStart) {
-        startVideoId = newchannels[0]
-        let lastVideoId = document.cookie // get last video id from cookie
+        let lastVideoId = window.localStorage.getItem('lastVideoId')
         startVideoId = channels.includes(lastVideoId) ? lastVideoId : ''
       }
     })

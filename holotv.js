@@ -30,13 +30,13 @@ function play(videoId) {
 
 function playByClick(evt) {
   evt.preventDefault()
-  let videoId = evt.target.getAttribute('id')
+  let videoId = evt.target.getAttribute('id').substr(4)
   if (videoId) play(videoId)
 }
 
 function channelItem(videoId) {
   let item = document.createElement('div')
-  item.setAttribute('id', videoId)
+  item.setAttribute('id', `vid-${videoId}`)
   item.setAttribute('class', 'cover')
   item.setAttribute("style", `background: url('https://img.youtube.com/vi/${videoId}/0.jpg') no-repeat center center / cover;`)
   item.onclick = playByClick
@@ -52,7 +52,7 @@ function addChannel(videoId) {
 
 function removeChannel(videoId) {
   console.log(`remove channel - ${videoId}`)
-  let channel = $(`#${videoId}`)
+  let channel = $(`#vid-${videoId}`)
   channel?.addEventListener('animationend', evt => {
     evt.preventDefault()
     evt.stopPropagation()

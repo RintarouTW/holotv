@@ -6,7 +6,7 @@ const reloadTimeout = 600000
 
 var reloadTimer
 var startVideoId
-var player            // player : YTPlayer singleton
+var ytplayer            // player : YTPlayer singleton
 var channels = []     // channels : array of videoId(s)
 
 window.$ = selector => document.querySelector(selector)
@@ -22,7 +22,7 @@ function getChannelInfo(videoId) {
 
 function play(videoId) {
   console.log('play - ' + videoId)
-  player.loadVideoById(videoId)
+  ytplayer.loadVideoById(videoId)
   getChannelInfo(videoId)
   // save videoId to the local storage
   window.localStorage.setItem('lastVideoId',videoId)
@@ -80,7 +80,16 @@ function updateChannels(autoStart) {
       channels = newchannels
       if (autoStart) {
         let lastVideoId = window.localStorage.getItem('lastVideoId')
+        console.log('get last video id from local storage - ' + lastVideoId)
         startVideoId = channels.includes(lastVideoId) ? lastVideoId : ''
+        // play the video if ytplayer was loaded faster than the channel info
+        try {
+          const state = ytplayer.getPlayerState()
+          console.log('player state = ' + state)
+          if (state == -1 /* unstarted */ || state == 5 /* cued */) play(startVideoId)
+        } catch (err) {
+          console.log('player is not ready yet')
+        }
       }
     })
   if (reloadTimer) clearTimeout(reloadTimer)
@@ -94,7 +103,7 @@ function onPlayerReady() {
 function onYouTubeIframeAPIReady() {
   // console.log('yt api ready')
   updateChannels(true)
-  player = new YT.Player('YTPlayer', {
+  ytplayer = new YT.Player('YTPlayer', {
     width: _displayWidth,
     height: _displayHeight,
     playerVars : {
@@ -122,17 +131,28 @@ const animateCSS = (element, animation) =>
       node.classList.remove(animation)
       resolve()
     }
-    
+
     node.addEventListener('animationend', handleAnimationEnd, {once: true})
   })
 
 // key binding
 const _keydownHandler = evt => {
-  // console.log(evt.code)
+  console.log(evt.code)
   switch(evt.code) {
     case 'KeyR':
       animateCSS('#Channels', 'flash')
       updateChannels()
+      break
+    case 'Space':
+      const state = ytplayer.getPlayerState()
+      if (state == YT.PlayerState.PLAYING) ytplayer.pauseVideo()
+      else if (state == YT.PlayerState.PAUSED) ytplayer.playVideo()
+      break
+    case 'KeyM':
+      if (ytplayer) {
+        if (ytplayer.isMuted()) ytplayer.unMute()
+        else ytplayer.mute()
+      }
       break
   }
 }

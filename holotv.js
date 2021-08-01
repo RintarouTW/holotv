@@ -114,7 +114,9 @@ function onYouTubeIframeAPIReady() {
     playerVars : {
       enablejsapi: 1,
       // controls: 0,
-      // modestbranding: 1,
+      modestbranding: 1,
+      iv_load_policy: 3,
+      disablekb: 1,
       autoplay: 1,
       origin: _webOrigin,
     },
@@ -142,11 +144,16 @@ const animateCSS = (element, animation) =>
 
 // key binding
 const _keydownHandler = evt => {
+  if(!ytplayer) return
   console.log(evt.code)
   switch(evt.code) {
     case 'KeyR':
+      if (evt.metaKey) return
       animateCSS('#Channels', 'flash')
       updateChannels()
+      break
+    case 'Enter':
+      ytplayer.getIframe()?.requestFullscreen()
       break
     case 'Space':
       const state = ytplayer.getPlayerState()
@@ -154,10 +161,8 @@ const _keydownHandler = evt => {
       else if (state == YT.PlayerState.PAUSED) ytplayer.playVideo()
       break
     case 'KeyM':
-      if (ytplayer) {
-        if (ytplayer.isMuted()) ytplayer.unMute()
-        else ytplayer.mute()
-      }
+      if (ytplayer.isMuted()) ytplayer.unMute()
+      else ytplayer.mute()
       break
   }
 }

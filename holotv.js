@@ -7,23 +7,24 @@ const reloadTimeout = 600000
 var reloadTimer
 var startVideoId
 var ytplayer            // player : YTPlayer singleton
-var channels = []     // channels : array of videoId(s)
+var channels = []       // channels : array of live video snippets
+var channelIds = []     // channelIds : array of videoId(s)
 
 window.$ = selector => document.querySelector(selector)
 
-function getChannelInfo(videoId) {
-  fetch(`${_serverURL}/yt/${videoId}`)
-    .then(resp => resp.json())
-    .then(info => {
-      // console.log(info.snippet)
-      $('#Title').innerText = info?.snippet?.title
-    })
+function setChannelInfo(videoId) {
+  channels.forEach( snippet => {
+    if (snippet.videoId == videoId) {
+      $('#Title').innerText = snippet.title
+      return
+    }
+  })
 }
 
 function play(videoId) {
   console.log('play - ' + videoId)
   ytplayer.loadVideoById(videoId)
-  getChannelInfo(videoId)
+  setChannelInfo(videoId)
   // save videoId to the local storage
   window.localStorage.setItem('lastVideoId',videoId)
 }
@@ -68,20 +69,24 @@ function updateChannels(autoStart) {
     .then(newchannels => {
       console.log('newchannels = ' + newchannels)
       console.log('channels = ' + channels)
+      const newchannelIds = newchannels.map(snippet => snippet.videoId)
       // remove the outdated channels
-      channels.forEach(videoId => {
-        if (!newchannels.includes(videoId)) removeChannel(videoId)
+      channels.forEach(snippet => {
+        const videoId = snippet.videoId
+        if (!newchannelIds.includes(videoId)) removeChannel(videoId)
       })
 
       // add the new channels
-      newchannels.forEach(videoId => {
-        if (!channels.includes(videoId)) addChannel(videoId)
+      newchannels.forEach(snippet => {
+        const videoId = snippet.videoId
+        if (!channelIds.includes(videoId)) addChannel(videoId)
       })
       channels = newchannels
+      channelIds = newchannelIds
       if (autoStart) {
         let lastVideoId = window.localStorage.getItem('lastVideoId')
         console.log('get last video id from local storage - ' + lastVideoId)
-        startVideoId = channels.includes(lastVideoId) ? lastVideoId : ''
+        startVideoId = channelIds.includes(lastVideoId) ? lastVideoId : ''
         // play the video if ytplayer was loaded faster than the channel info
         try {
           const state = ytplayer.getPlayerState()

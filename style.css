@@ -18,6 +18,9 @@
   overflow : scroll;
 }
 
+#YTPlayer {
+  background-color: #000;
+}
 #Channels {
   margin: 20px;
 }

@@ -2,7 +2,7 @@
 const _serverURL = 'https://fathomless-brushlands-18222.herokuapp.com'
 const _webOrigin = 'https://rintaroutw.github.io'
 const _displayWidth = 720, _displayHeight = 405
-const reloadTimeout = 600000
+const reloadTimeout = 150000
 
 var reloadTimer
 var startVideoId
@@ -115,6 +115,7 @@ function onYouTubeIframeAPIReady() {
       enablejsapi: 1,
       // controls: 0,
       modestbranding: 1,
+      color: 'black',
       iv_load_policy: 3,
       disablekb: 1,
       autoplay: 1,

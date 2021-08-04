@@ -1,8 +1,12 @@
+body {
+  background-color: #000;
+  color: #fff;
+}
+
 /* grid layout */
 .container {
   display: grid;
   grid-template-columns: 20px auto 340px 20px;
-  /* height: 900px; */
 }
 
 .item.display {
@@ -29,17 +33,9 @@
   height: 70px;
   line-height: 2em;
 }
-body {
-  background-color: #000;
-  color: #fff;
-}
-
-a, a:visited {
-  color: #64a7ab;
-}
 
 .help {
-  margin-top: 30px;
+  margin: 30px 5px 5px 5px;
   line-height: 1.6em;
 }
 
@@ -70,19 +66,19 @@ a, a:visited {
 }
 
 .cover {
-  width:300px;
-  height: 90px; 
+  width: 250px;
+  height: 140px; 
   border-radius: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   transition: all .1s ease-in;
   animation: fade-in 1s;
 }
 
 .coverFadeOut {
-  width:300px;
-  height: 90px; 
+  width: 250px;
+  height: 140px; 
   border-radius: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   transition: all .1s ease-out;
   animation: fade-out 1s;
 }
@@ -92,3 +88,13 @@ a, a:visited {
   cursor: pointer;
 }
 
+.credit {
+  background-color: #111;
+  margin: 5px;
+  color: #777;
+}
+
+a, a:visited {
+  color: #777;
+  text-decoration: none;
+}

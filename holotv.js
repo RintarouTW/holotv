@@ -39,7 +39,7 @@ function channelItem(videoId) {
   let item = document.createElement('div')
   item.setAttribute('id', `vid-${videoId}`)
   item.setAttribute('class', 'cover')
-  item.setAttribute("style", `background: url('https://img.youtube.com/vi/${videoId}/0.jpg') no-repeat center center / cover;`)
+  item.setAttribute("style", `background: url('https://img.youtube.com/vi/${videoId}/mqdefault.jpg') no-repeat center center / cover;`)
   item.onclick = playByClick
   return item
 }

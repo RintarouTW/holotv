@@ -29,18 +29,16 @@ function play(videoId) {
   window.localStorage.setItem('lastVideoId',videoId)
 }
 
-function playByClick(evt) {
-  evt.preventDefault()
-  let videoId = evt.target.getAttribute('id').substr(4)
-  if (videoId) play(videoId)
-}
-
 function channelItem(videoId) {
   let item = document.createElement('div')
   item.setAttribute('id', `vid-${videoId}`)
   item.setAttribute('class', 'cover')
   item.setAttribute("style", `background: url('https://img.youtube.com/vi/${videoId}/mqdefault.jpg') no-repeat center center / cover;`)
-  item.onclick = playByClick
+  item.onclick = evt => {
+    evt.preventDefault()
+    let videoId = evt.target.getAttribute('id').substr(4)
+    if (videoId) play(videoId)
+  }
   return item
 }
 
@@ -75,6 +73,18 @@ function updateChannels(autoStart) {
         const videoId = snippet.videoId
         if (!newchannelIds.includes(videoId)) removeChannel(videoId)
       })
+
+      // if no live channel, show the banner
+      if (newchannels.length == 0) {
+        let item = document.createElement('div')
+        item.setAttribute('id', `no-live-item`)
+        item.setAttribute('class', 'cover')
+        item.innerText = 'No Live Channel now'
+        $('#Channels').appendChild(item)
+        return
+      }
+      // remove the no live channel banner if exists
+      $('#no-live-item')?.remove()
 
       // add the new channels
       newchannels.forEach(snippet => {

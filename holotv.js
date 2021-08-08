@@ -76,6 +76,7 @@ function updateChannels(autoStart) {
 
       // if no live channel, show the banner
       if (newchannels.length == 0) {
+        if ($('#no-live-item')) return
         let item = document.createElement('div')
         item.setAttribute('id', `no-live-item`)
         item.setAttribute('class', 'cover')

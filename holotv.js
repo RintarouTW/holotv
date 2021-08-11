@@ -3,10 +3,12 @@ const _serverURL = 'https://fathomless-brushlands-18222.herokuapp.com'
 const _webOrigin = 'https://rintaroutw.github.io'
 const _displayWidth = 720, _displayHeight = 405
 const reloadTimeout = 150000
+const isWebKit = /WebKit/.test(navigator.userAgent)
 
 var reloadTimer
 var startVideoId
 var ytplayer            // player : YTPlayer singleton
+var isYTPlayerReady = false
 var channels = []       // channels : array of live video snippets
 var channelIds = []     // channelIds : array of videoId(s)
 
@@ -22,7 +24,7 @@ function setChannelInfo(videoId) {
 }
 
 function play(videoId) {
-  console.log('play - ' + videoId)
+  console.debug('play - ' + videoId)
   ytplayer.loadVideoById(videoId)
   setChannelInfo(videoId)
   // save videoId to the local storage
@@ -43,14 +45,14 @@ function channelItem(videoId) {
 }
 
 function addChannel(videoId) {
-  console.log(`add channel - ${videoId}`)
+  console.debug(`add channel - ${videoId}`)
   let list = $('#Channels')
   let item = channelItem(videoId)
   list.appendChild(item)
 }
 
 function removeChannel(videoId) {
-  console.log(`remove channel - ${videoId}`)
+  console.debug(`remove channel - ${videoId}`)
   let channel = $(`#vid-${videoId}`)
   channel?.addEventListener('animationend', evt => {
     evt.preventDefault()
@@ -61,12 +63,12 @@ function removeChannel(videoId) {
 }
 
 function updateChannels(autoStart) {
-  console.log('updateChannels()')
+  console.debug('updateChannels()')
   fetch(_serverURL + '/hololive')
     .then(resp => resp.json())
     .then(newchannels => {
-      console.log('newchannels = ' + newchannels)
-      console.log('channels = ' + channels)
+      console.debug('newchannels = ' + newchannels)
+      console.debug('channels = ' + channels)
       const newchannelIds = newchannels.map(snippet => snippet.videoId)
       // remove the outdated channels
       channels.forEach(snippet => {
@@ -96,15 +98,15 @@ function updateChannels(autoStart) {
       channelIds = newchannelIds
       if (autoStart) {
         let lastVideoId = window.localStorage.getItem('lastVideoId')
-        console.log('get last video id from local storage - ' + lastVideoId)
+        console.debug('get last video id from local storage - ' + lastVideoId)
         startVideoId = channelIds.includes(lastVideoId) ? lastVideoId : ''
         // play the video if ytplayer was loaded faster than the channel info
         try {
           const state = ytplayer.getPlayerState()
-          console.log('player state = ' + state)
+          console.debug('player state = ' + state)
           if (state == -1 /* unstarted */ || state == 5 /* cued */) play(startVideoId)
         } catch (err) {
-          console.log('player is not ready yet')
+          console.debug('player is not ready yet')
         }
       }
     })
@@ -113,11 +115,13 @@ function updateChannels(autoStart) {
 }
 
 function onPlayerReady() {
+  isYTPlayerReady = true
+  $('#Title').innerText = ''
   if (startVideoId) play(startVideoId)
 }
 
 function onYouTubeIframeAPIReady() {
-  // console.log('yt api ready')
+  // console.debug('yt api ready')
   updateChannels(true)
   ytplayer = new YT.Player('YTPlayer', {
     width: _displayWidth,
@@ -125,9 +129,12 @@ function onYouTubeIframeAPIReady() {
     playerVars : {
       enablejsapi: 1,
       // controls: 0,
+      fs: 0,
       modestbranding: 1,
       color: 'black',
       iv_load_policy: 3,
+      cc_load_policy: 0,
+      rel: 0,
       disablekb: 1,
       autoplay: 1,
       origin: _webOrigin,
@@ -156,8 +163,8 @@ const animateCSS = (element, animation) =>
 
 // key binding
 const _keydownHandler = evt => {
-  if(!ytplayer) return
-  console.log(evt.code)
+  if(!isYTPlayerReady) return
+  console.debug(evt.code)
   switch(evt.code) {
     case 'KeyR':
       if (evt.metaKey) return
@@ -165,7 +172,10 @@ const _keydownHandler = evt => {
       updateChannels()
       break
     case 'Enter':
-      ytplayer.getIframe()?.requestFullscreen()
+      if (isWebKit)
+        ytplayer.getIframe()?.webkitRequestFullscreen()
+      else
+        ytplayer.getIframe()?.requestFullscreen()
       break
     case 'Space':
       const state = ytplayer.getPlayerState()

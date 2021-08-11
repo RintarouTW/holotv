@@ -1,4 +1,5 @@
 body {
+  font-family: 'Noto Serif JP';
   background-color: #000;
   color: #fff;
 }
@@ -29,12 +30,15 @@ body {
   margin: 20px;
 }
 #Title {
+  font-family: 'Noto Serif JP';
+  font-weight: 600;
   width: 700px;
   height: 70px;
   line-height: 2em;
 }
 
 .help {
+  font-family: 'Roboto', sans-serif;
   margin: 30px 5px 5px 5px;
   line-height: 1.6em;
 }

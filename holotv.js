@@ -189,3 +189,22 @@ const _keydownHandler = evt => {
   }
 }
 document.addEventListener('keydown', _keydownHandler)
+
+function parseVideoId(link) {
+  let videoId = link
+  let id = link.match(/(watch\?|&)v=(\w|-)*/)
+  if (id) videoId = id[0].split('=')[1]
+  id = link.match(/(?<=^https:\/\/youtu.be\/)(\w|-)*/)
+  if(id) videoId = id[0]
+  if (/^http(s)?:/.test(videoId)) return undefined
+  return videoId
+}
+
+document.addEventListener('paste', evt => {
+  evt.stopPropagation()
+  evt.preventDefault()
+  let clipboardData = evt.clipboardData || window.clipboardData;
+  let pastedData = clipboardData.getData('Text');
+  let videoId = parseVideoId(pastedData)
+  if (videoId) play(videoId) 
+})

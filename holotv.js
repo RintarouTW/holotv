@@ -64,7 +64,7 @@ function removeChannel(videoId) {
 
 function updateChannels(autoStart) {
   console.debug('updateChannels()')
-  fetch(_serverURL + '/hololive')
+  fetch(_serverURL + '/hololive', {mode: 'no-cors'})
     .then(resp => resp.json())
     .then(newchannels => {
       console.debug('newchannels = ' + newchannels)
